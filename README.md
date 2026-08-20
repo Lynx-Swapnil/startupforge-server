@@ -1,76 +1,83 @@
-StartupForge Backend API
-এটি StartupForge প্ল্যাটফর্মের ব্যাকএন্ড সার্ভার। এই সার্ভারটি স্টার্টআপ ম্যানেজমেন্ট, অপরচুনিটি পোস্টিং, অ্যাপ্লিকেশন ট্র্যাকিং এবং স্ট্রাইপ পেমেন্ট ইন্টিগ্রেশন হ্যান্ডেল করে।
+﻿# StartupForge Server
 
-🛠 প্রযুক্তি (Tech Stack)
-Node.js & Express.js
+A RESTful API backend for StartupForge — a platform connecting startup founders with collaborators.
 
-MongoDB (Database)
+## Tech Stack
 
-Stripe API (Payments)
+- Node.js + Express.js
+- MongoDB (Atlas)
+- JWT Authentication (HTTPOnly Cookies)
+- Stripe Payments
+- dotenv for environment variables
 
-Cors & Dotenv
+## Features
 
-🚀 মূল ফিচারসমূহ (Key Features)
-Authentication: ইউজার প্রোফাইল ও অথেন্টিকেশন সাপোর্ট।
+- JWT token generation and verification middleware
+- Protected dashboard API routes
+- Server-side pagination on opportunities
+- Server-side search using MongoDB `$regex`
+- Server-side filter using MongoDB `$in`
+- Stripe Checkout for premium founder subscription
+- Admin approve/reject startups
+- Role-based access (Founder, Collaborator, Admin)
 
-Startup Management: নতুন স্টার্টআপ তৈরি, আপডেট এবং ডিলিট করার সুবিধা।
+## API Endpoints
 
-Opportunities: চাকরির বা প্রজেক্টের সুযোগ পোস্ট করা এবং ম্যানেজ করা।
+### Auth
+- `POST /jwt` — Issue JWT token (stored in HTTPOnly cookie)
+- `POST /logout` — Clear JWT token
 
-Applications: আবেদনকারীদের অ্যাপ্লিকেশন ট্র্যাক করা এবং স্ট্যাটাস (Pending/Accepted/Rejected) পরিবর্তন করা।
+### Startups
+- `GET /startups` — Get all startups
+- `GET /startups/:id` — Get single startup
+- `POST /startups` — Create startup (protected)
+- `PUT /startups/:id` — Update startup (protected)
+- `DELETE /startups/:id` — Delete startup (protected)
+- `PATCH /startups/:id/status` — Admin approve/reject (protected)
 
-Payments: স্ট্রাইপ ইন্টিগ্রেশনের মাধ্যমে প্রিমিয়াম সাবস্ক্রিপশন এবং পেমেন্ট ট্র্যাকিং।
+### Opportunities
+- `GET /opportunities` — Get with search, filter, pagination
+- `GET /opportunities/:id` — Get single opportunity
+- `POST /opportunities` — Create opportunity (protected)
+- `PUT /opportunities/:id` — Update opportunity (protected)
+- `DELETE /opportunities/:id` — Delete opportunity (protected)
 
-Analytics: এডমিন প্যানেলের জন্য স্ট্যাটিস্টিকস এবং রেভিনিউ অ্যানালিটিক্স।
+### Applications
+- `POST /applications` — Submit application (protected)
+- `GET /applications/by-founder/:ownerId` — Get applications for founder (protected)
+- `GET /applications/by-user/:email` — Get user applications (protected)
+- `GET /applications/check` — Check if applied
+- `PATCH /applications/:id` — Update application status (protected)
 
-⚙️ ইনস্টলেশন (How to Run)
-১. প্রজেক্টটি ক্লোন করুন:
+### Payments
+- `POST /create-checkout-session` — Create Stripe session
+- `POST /payments` — Save payment (protected)
+- `GET /payments` — Get all payments (protected)
+- `GET /payments/check-premium/:userId` — Check premium status
 
-Bash
-git clone <your-repository-url>
-cd <your-folder-name>
-২. ডিপেন্ডেন্সি ইন্সটল করুন:
+### Admin
+- `GET /admin/stats` — Dashboard stats (protected)
+- `GET /admin/revenue-analytics` — Revenue chart data (protected)
 
-Bash
-npm install
-৩. .env ফাইল তৈরি করুন এবং নিচের ভেরিয়েবলগুলো সেট করুন:
+## Environment Variables
 
-Code snippet
+Create a `.env` file:
+
+```
 PORT=5000
 DB_URL=your_mongodb_connection_string
 STRIPE_SECRET_KEY=your_stripe_secret_key
-NEXT_PUBLIC_URL=your_frontend_url
-৪. সার্ভার রান করুন:
+NEXT_PUBLIC_URL=http://localhost:3000
+JWT_SECRET=your_jwt_secret_key
+```
 
-Bash
-node index.js
-# অথবা nodemon ব্যবহার করলে
+## Run Locally
+
+```bash
+npm install
 npm start
-🔗 API এন্ডপয়েন্টসমূহ (Endpoints)
-Startups
-POST /startups - নতুন স্টার্টআপ তৈরি।
+```
 
-GET /startups - সব স্টার্টআপ দেখা।
+## Admin Credentials
 
-GET /startups/:id - একটি নির্দিষ্ট স্টার্টআপের তথ্য।
-
-PUT /startups/:id - স্টার্টআপ আপডেট।
-
-Opportunities
-POST /opportunities - নতুন সুযোগ পোস্ট করা।
-
-GET /opportunities - সব সুযোগ দেখা।
-
-PUT /opportunities/:id - সুযোগ আপডেট।
-
-Applications
-POST /applications - নতুন আবেদন করা।
-
-GET /applications/by-founder/:ownerId - ফাউণ্ডারের জন্য তার স্টার্টআপের সব আবেদন দেখা।
-
-PATCH /applications/:id - আবেদনের স্ট্যাটাস পরিবর্তন।
-
-Payments
-POST /create-checkout-session - পেমেন্ট সেশনের জন্য স্ট্রাইপ চেকআউট।
-
-GET /admin/revenue-analytics - রেভিনিউ রিপোর্ট দেখা।
+- Email: mdantormia1779@gmail.com
