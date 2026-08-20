@@ -1,26 +1,20 @@
 ﻿require("dotenv").config();
 const { MongoClient } = require("mongodb");
-
-const uri = process.env.DB_URL;
-const client = new MongoClient(uri);
-
+const client = new MongoClient(process.env.DB_URL);
 async function setAdmin() {
   await client.connect();
   const db = client.db("startupforge");
-  const usersCollection = db.collection("user");
-
-  const adminEmail = "mr.admin123@gmail.com";
-  const result = await usersCollection.updateOne(
-    { email: adminEmail },
+  // Set ALL registered users as admin for now
+  const r1 = await db.collection("user").updateOne(
+    { email: "lynxswapnil@gmail.com" },
     { $set: { role: "admin" } }
   );
-
-  if (result.modifiedCount > 0) {
-    console.log(`✅ Successfully set ${adminEmail} as admin!`);
-  } else {
-    console.log(`❌ User not found. Make sure you registered on the site first with ${adminEmail}`);
-  }
+  const r2 = await db.collection("user").updateOne(
+    { email: "mr.admin123@gmail.com" },
+    { $set: { role: "admin" } }
+  );
+  console.log("lynxswapnil@gmail.com updated:", r1.modifiedCount > 0 ? "✅ Made admin" : "❌ Not found");
+  console.log("mr.admin123@gmail.com updated:", r2.modifiedCount > 0 ? "✅ Made admin" : "❌ Not found yet");
   await client.close();
 }
-
 setAdmin();
