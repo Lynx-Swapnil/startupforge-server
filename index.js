@@ -1,4 +1,4 @@
-﻿const dns = require("node:dns");
+const dns = require("node:dns");
 dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
 const express = require("express");
@@ -367,12 +367,18 @@ async function run() {
       res.send(result);
     });
 
-    app.listen(port, () => {
-      console.log(`Server running on port ${port}`);
-    });
+    // Only listen locally — Vercel handles this in production
+    if (process.env.NODE_ENV !== "production") {
+      app.listen(port, () => {
+        console.log(`Server running on port ${port}`);
+      });
+    }
   } catch (error) {
     console.log("MONGO ERROR:", error);
   }
 }
 
 run();
+
+// Export for Vercel serverless
+module.exports = app;
